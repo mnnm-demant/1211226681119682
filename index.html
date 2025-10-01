@@ -30,7 +30,7 @@
     const contactId = params.get('contact_id');
 
     if (contactId) {
-      fetch(`https://script.google.com/macros/s/AKfycbw09R6mMjaKigRhXCczYiCw_9SaUhrN7DwP9GM880M8oRijsHFkpRjQmeh8Fl0NpVFO7w/exec?contact_id=${contactId}`)
+      fetch(`https://script.google.com/macros/s/AKfycbzUIgwebFYOROb0wySWgeBKvPysxv7CkaM4pjVlAeU-jmjRK8EiW9mDbjd832yora-rVA/exec?contact_id=${contactId}`)
         .then(response => response.text())
         .then(html => {
           document.getElementById('gift-card-container').innerHTML = html;
