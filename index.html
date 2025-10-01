@@ -42,7 +42,7 @@
         })
         .catch(err => {
           console.error('Fetch error:', err);
-          document.getElementById('gift-card-container').innerHTML = '<p>Error loading gift card.</p>';
+          document.getElementById('gift-card-container').innerHTML = '<p>Error loading gift card. :(</p>';
         });
     } else {
       document.getElementById('gift-card-container').innerHTML = '<p>Missing contact ID.</p>';
