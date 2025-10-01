@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Gift Card Viewer</title>
+  <title>Redirecting to Gift Card</title>
   <style>
     body {
       font-family: 'Roboto', sans-serif;
       padding: 2em;
       background: #fa344c;
-      color: #333;
+      color: #fff;
+      text-align: center;
     }
     .container {
       max-width: 600px;
@@ -17,12 +18,13 @@
       padding: 2em;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <div class="container" id="gift-card-container">
-    <p>Loading your gift card...</p>
+  <div class="container">
+    <p>Redirecting you to your gift card...</p>
   </div>
 
   <script>
@@ -30,22 +32,10 @@
     const contactId = params.get('contact_id');
 
     if (contactId) {
-      fetch(`https://script.google.com/macros/s/AKfycbzUIgwebFYOROb0wySWgeBKvPysxv7CkaM4pjVlAeU-jmjRK8EiW9mDbjd832yora-rVA/exec?contact_id=${contactId}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.text();
-        })
-        .then(html => {
-          document.getElementById('gift-card-container').innerHTML = html;
-        })
-        .catch(err => {
-          console.error('Fetch error:', err);
-          document.getElementById('gift-card-container').innerHTML = '<p>Error loading gift card. :(</p>';
-        });
+      window.location.href = `https://script.google.com/macros/s/AKfycbzUIgwebFYOROb0wySWgeBKvPysxv7CkaM4pjVlAeU-jmjRK8EiW9mDbjd832yora-rVA/exec?contact_id=${contactId}`;
     } else {
-      document.getElementById('gift-card-container').innerHTML = '<p>Missing contact ID.</p>';
+      document.querySelector('.container').innerHTML = '<p>Missing contact ID.</p>';
     }
   </script>
 </body>
+</html>
