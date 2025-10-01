@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gift Card Viewer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 2em;
+      background: #f9f9f9;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 2em;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="gift-card-container">
+    <p>Loading your gift card...</p>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const contactId = params.get('contact_id');
+
+    if (contactId) {
+      fetch(`https://script.google.com/macros/s/AKfycbzUIgwebFYOROb0wySWgeBKvPysxv7CkaM4pjVlAeU-jmjRK8EiW9mDbjd832yora-rVA/exec?contact_id=${contactId}`)
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('gift-card-container').innerHTML = html;
+        })
+        .catch(err => {
+          document.getElementById('gift-card-container').innerHTML = '<p>Error loading gift card.</p>';
+        });
+    } else {
+      document.getElementById('gift-card-container').innerHTML = '<p>Missing contact ID.</p>';
+    }
+  </script>
+</body>
+</html>
