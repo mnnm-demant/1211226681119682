@@ -31,11 +31,17 @@
 
     if (contactId) {
       fetch(`https://script.google.com/macros/s/AKfycbzUIgwebFYOROb0wySWgeBKvPysxv7CkaM4pjVlAeU-jmjRK8EiW9mDbjd832yora-rVA/exec?contact_id=${contactId}`)
-        .then(response => response.text())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.text();
+        })
         .then(html => {
           document.getElementById('gift-card-container').innerHTML = html;
         })
         .catch(err => {
+          console.error('Fetch error:', err);
           document.getElementById('gift-card-container').innerHTML = '<p>Error loading gift card.</p>';
         });
     } else {
@@ -43,4 +49,3 @@
     }
   </script>
 </body>
-</html>
