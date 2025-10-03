@@ -62,7 +62,7 @@
     const maxAttempts = 10;
     const delay = 2000; // 2 seconds
 
-    fetch(`https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?contact_id=${contactId}`)
+    fetch(`https://script.google.com/macros/s/AKfycbxIstblYCq_HbeI13A2g1SNY4-XPtWlvRqK7-NbFbNq/dev?contact_id=${contactId}`)
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {
