@@ -31,36 +31,59 @@
   const params = new URLSearchParams(window.location.search);
   const contactId = params.get('contact_id');
 
-  if (contactId) {
-    fetch('https://hooks.zapier.com/hooks/catch/9763909/u15ckfg/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ contact_id: contactId })
-    })
-    .then(response => response.json())
-    .then(data => {
-      const container = document.getElementById('gift-card-container');
-      if (data.status === 'success') {
-        container.innerHTML = `
-          <h2>Thank you for your feedback!</h2>
-          <p>Here is your Tim Hortons gift card:</p>
-          <p><strong>Link:</strong> ${data.gift_card_url}</a></p>
-          <p><strong>Challenge Phrase:</strong> ${data.password}</p>
-        `;
-      } else if (data.status === 'used') {
-        container.innerHTML = `<p>${data.message}</p>`;
-      } else {
-        container.innerHTML = `<p>Sorry, something went wrong.</p>`;
-      }
-    })
-    .catch(err => {
-      console.error('Fetch error:', err);
-      document.getElementById('gift-card-container').innerHTML = '<p>Error loading gift card. :(</p>';
-    });
-  } else {
-    document.getElementById('gift-card-container').innerHTML = '<p>Missing contact ID.</p>';
+  const container = document.getElementById('gift-card-container');
+
+  if (!contactId) {
+    container.innerHTML = '<p>Missing contact ID.</p>';
+    return;
+  }
+
+  container.innerHTML = '<p>Redirecting you to your gift card...</p>';
+
+  // Step 1: Send contact ID to Zapier
+  fetch('https://hooks.zapier.com/hooks/catch/9763909/u15ckfg', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ contact_id: contactId })
+  })
+  .then(() => {
+    // Step 2: Poll Google Sheet for result
+    pollForGiftCard(contactId);
+  })
+  .catch(err => {
+    console.error('Initial fetch error:', err);
+    container.innerHTML = '<p>Error submitting request.</p>';
+  });
+
+  // Step 3: Polling function
+  function pollForGiftCard(contactId, attempts = 0) {
+    const maxAttempts = 10;
+    const delay = 2000; // 2 seconds
+
+    fetch(`https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?contact_id=${contactId}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          container.innerHTML = `
+            <h2>Thank you for your feedback!</h2>
+            <p>Here is your Tim Hortons gift card:</p>
+            <p><strong>Link:</strong> <a href="${data.gift_card_url}" target="_blank</p>
+            <p><strong>Challenge Phrase:</strong> ${data.password}</p>
+          `;
+        } else if (data.status === 'used') {
+          container.innerHTML = `<p>${data.message}</p>`;
+        } else if (attempts < maxAttempts) {
+          setTimeout(() => pollForGiftCard(contactId, attempts + 1), delay);
+        } else {
+          container.innerHTML = '<p>Sorry, something went wrong.</p>';
+        }
+      })
+      .catch(err => {
+        console.error('Polling error:', err);
+        container.innerHTML = '<p>Error retrieving gift card.</p>';
+      });
   }
 </script>
 </body>
